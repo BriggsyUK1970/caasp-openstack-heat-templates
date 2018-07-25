@@ -74,6 +74,8 @@ resources:
   keypair:
     type: OS::Nova::KeyPair
     properties:
+      #need to save private key for it to be available to output at the end of script
+      save_private_key: true
       name:
         str_replace:
           template: {list_join: ['-', [{get_param: 'OS::stack_name'}, 'caasp-keypair']]}
@@ -342,3 +344,8 @@ resources:
               params:
                 $admin_node: { get_attr: [admin, first_address] }
                 $root_password: { get_param: root_password }
+#Created private key is added to Output section of Stack to add to ~/.ssh/<key>.pem file
+outputs:
+  private_key:
+    description: keypair
+    value: { get_attr: [ keypair, private_key ] }
